@@ -1,0 +1,31 @@
+import torch
+from torch import nn
+
+X_batch = torch.tensor([[10.0], [37.8]], dtype=torch.float32)
+Y_batch = torch.tensor([[50.0], [100.0]], dtype=torch.float32)
+
+model = nn.Linear(in_features=1, out_features=1)
+loss_fn = nn.MSELoss()
+
+optimizer = torch.optim.SGD(model.parameters(), lr=0.0001)
+
+for i in range(0, 150000):
+    optimizer.zero_grad()
+    outputs=model(X_batch)
+    loss=loss_fn(outputs, Y_batch)
+    loss.backward()
+    optimizer.step()
+
+    if i % 1000 == 0:
+        print(f"Updated Weights after Training Pass at {i}")
+        print(f"Model bias:{model.bias}")
+        print(f"Model weight:{model.weight}")
+        print()
+
+
+measurements = torch.tensor([[20], [40]], dtype=torch.float32)
+model.eval()
+
+with torch.no_grad():
+    predictions = model(measurements)
+    print(predictions)
